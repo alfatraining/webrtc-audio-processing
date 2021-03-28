@@ -50,6 +50,13 @@
 #elif defined(__EMSCRIPTEN__)
 #define WEBRTC_ARCH_32_BITS
 #define WEBRTC_ARCH_LITTLE_ENDIAN
+#elif defined(__powerpc64__)
+#define WEBRTC_ARCH_64_BITS
+#if defined(__BIG_ENDIAN__)
+#define WEBRTC_ARCH_BIG_ENDIAN
+#else
+#define WEBRTC_ARCH_LITTLE_ENDIAN
+#endif
 #else
 #error Please add support for your architecture in rtc_base/system/arch.h
 #endif
