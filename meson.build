@@ -83,6 +83,10 @@ elif host_system == 'windows'
   platform_cflags += ['-DWEBRTC_WIN', '-D_WIN32', '-U__STRICT_ANSI__']
   # this one is for MinGW to get format specifiers from inttypes.h in C++
   platform_cflags += ['-D__STDC_FORMAT_MACROS=1']
+  # Avoid min/max from windows.h which breaks std::min/max
+  platform_cflags += ['-DNOMINMAX']
+  # Ensure M_PI etc are defined
+  platform_cflags += ['-D_USE_MATH_DEFINES']
   os_deps += [cc.find_library('winmm')]
   have_win = true
 endif
