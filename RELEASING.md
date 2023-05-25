@@ -25,27 +25,19 @@ git tag -s -m 'WebRTC AudioProcessing v<X.y>' v<X.y>
 ## Make a tarball
 
 ```sh
-git archive --format 'tar.gz' \
-  --prefix 'webrtc-audio-processing-X.y/' -9 vX.y \
-  > webrtc-audio-processing-X.y.tar.gz
+# The output will be in build/meson-dist/
+meson dist -C build --formats=gztar,xztar --include-subprojects
 ```
 
 ## Do a test build
 
 ```sh
-tar xvf webrtc-audio-processing-X.y.tar.gz
+tar xvf webrtc-audio-processing-X.y.tar.xz
 cd webrtc-audio-processing-X.y
 meson . build -Dprefix=$PWD/install
 ninja -C build
 ninja -C build install
 cd ..
-```
-
-## Checksum the tarball
-
-```sh
-sha256sum webrtc-audio-processing-X.y.tar.gz \
-  > webrtc-audio-processing-X.y.tar.gz.sha256
 ```
 
 ## Publish the files
