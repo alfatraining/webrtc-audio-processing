@@ -34,6 +34,17 @@ cpp = meson.get_compiler('cpp')
 
 host_system = host_machine.system()
 
+# Don't rely on the cross file setting the system properly when targeting ios
+if host_system == 'darwin' and meson.is_cross_build()
+  ios_test_code = '''#include <TargetConditionals.h>
+  #if ! TARGET_OS_IPHONE
+  #error "Not iOS/tvOS/watchOS/iPhoneSimulator"
+  #endif'''
+  if cc.compiles(ios_test_code, name : 'building for iOS')
+    host_system = 'ios'
+  endif
+endif
+
 platform_cflags = []
 os_cflags = []
 os_deps = []
