@@ -4,7 +4,7 @@ project('webrtc-audio-processing', 'c', 'cpp',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized',
                       'c_std=c11',
-                      'cpp_std=c++14',
+                      'cpp_std=c++17',
                     ]
 )
 
@@ -57,7 +57,6 @@ have_win = false
 absl_dep = [
   dependency('absl_base'),
   dependency('absl_flags'),
-  dependency('absl_types'),
   dependency('absl_strings'),
   dependency('absl_synchronization'),
 ]
@@ -66,6 +65,8 @@ if ['darwin', 'ios'].contains(host_system)
   os_cflags = ['-DWEBRTC_MAC']
   if host_system == 'ios'
     os_cflags += ['-DWEBRTC_IOS']
+    # For absl_bad_optional_access
+    absl_dep += [dependency('absl_types')]
   endif
   have_posix = true
 elif host_system == 'android'
