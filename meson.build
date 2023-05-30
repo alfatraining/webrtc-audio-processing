@@ -59,14 +59,25 @@ absl_dep = [
   dependency('absl_flags'),
   dependency('absl_strings'),
   dependency('absl_synchronization'),
+  dependency('absl_bad_optional_access'),
 ]
+
+if absl_dep[0].type_name() == 'internal'
+  absl_subproj = subproject('abseil-cpp')
+  headers = [
+    absl_subproj.get_variable('absl_base_headers'),
+    absl_subproj.get_variable('absl_flags_headers'),
+    absl_subproj.get_variable('absl_strings_headers'),
+    absl_subproj.get_variable('absl_synchronization_headers'),
+    absl_subproj.get_variable('absl_types_headers'),
+  ]
+  install_headers(headers, preserve_path: true)
+endif
 
 if ['darwin', 'ios'].contains(host_system)
   os_cflags = ['-DWEBRTC_MAC']
   if host_system == 'ios'
     os_cflags += ['-DWEBRTC_IOS']
-    # For absl_bad_optional_access
-    absl_dep += [dependency('absl_types')]
   endif
   have_posix = true
 elif host_system == 'android'
