@@ -184,11 +184,20 @@ pkgconfig.generate(
     extra_cflags: [
       '-DWEBRTC_LIBRARY_IMPL',
     ] + platform_cflags,
-    libraries: libwebrtc_audio_processing,
+    libraries: [
+      libwebrtc_audio_processing,
+    ],
+    requires: [
+      # the audio processing header references absl's optional.h
+      'absl_base',
+    ]
 )
 
-audio_processing_dep = declare_dependency(link_with : libwebrtc_audio_processing,
-    include_directories : [webrtc_inc])
+audio_processing_dep = declare_dependency(
+  link_with: libwebrtc_audio_processing,
+  dependencies: [absl_dep],
+  include_directories: [webrtc_inc]
+)
 
 meson.override_dependency(apm_project_name, audio_processing_dep)
 
@@ -204,7 +213,9 @@ pkgconfig.generate(
     libraries: libwebrtc_audio_coding,
 )
 
-audio_coding_dep = declare_dependency(link_with : libwebrtc_audio_coding,
-    include_directories : [webrtc_inc])
+audio_coding_dep = declare_dependency(
+  link_with: libwebrtc_audio_coding,
+  include_directories: [webrtc_inc]
+)
 
 meson.override_dependency(ac_project_name, audio_coding_dep)
