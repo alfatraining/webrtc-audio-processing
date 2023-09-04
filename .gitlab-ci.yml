@@ -83,8 +83,12 @@ build-container-aarch64:
   extends:
     - .fdo.distribution-image@ubuntu
   script:
-    - meson setup --wrap-mode=nofallback builddir
+    - meson setup --wrap-mode=nofallback --prefix=/usr --libdir=lib builddir
     - ninja -C builddir
+    - DESTDIR=$PWD/_install ninja install -C builddir
+      # Test that the pc files are usable
+    - PKG_CONFIG_PATH=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-processing-1
+    - PKG_CONFIG_PATH=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-coding-1
   artifacts:
     expire_in: '5 days'
     when: 'always'
@@ -96,8 +100,12 @@ build-container-aarch64:
   extends:
     - .fdo.distribution-image@ubuntu
   script:
-    - meson setup --force-fallback-for=abseil-cpp builddir
+    - meson setup --force-fallback-for=abseil-cpp --prefix=/usr --libdir=lib builddir
     - ninja -C builddir
+    - DESTDIR=$PWD/_install ninja install -C builddir
+      # Test that the pc files are usable
+    - PKG_CONFIG_LIBDIR=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-processing-1
+    - PKG_CONFIG_LIBDIR=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-coding-1
   artifacts:
     expire_in: '5 days'
     when: 'always'

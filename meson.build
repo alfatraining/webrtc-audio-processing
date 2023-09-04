@@ -19,12 +19,10 @@ minor_version = version_split[1]
 
 apm_major_version = major_version
 apm_minor_version = minor_version
-apm_version = apm_major_version + '.' + apm_minor_version
 apm_project_name = 'webrtc-audio-processing-' + apm_major_version
 
 ac_major_version = major_version
 ac_minor_version = minor_version
-ac_version = ac_major_version + '.' + ac_minor_version
 ac_project_name = 'webrtc-audio-coding-' + ac_major_version
 
 include_subdir = apm_project_name
@@ -72,6 +70,9 @@ if absl_dep[0].type_name() == 'internal'
     absl_subproj.get_variable('absl_types_headers'),
   ]
   install_headers(headers, preserve_path: true)
+  pc_requires = []
+else
+  pc_requires = [absl_dep[0]]
 endif
 
 if ['darwin', 'ios'].contains(host_system)
@@ -176,21 +177,13 @@ subdir('webrtc')
 pkgconfig = import('pkgconfig')
 
 pkgconfig.generate(
-    name: apm_project_name,
-    description: 'WebRTC Audio Processing library',
-    version: apm_major_version + '.' + apm_minor_version,
-    filebase: apm_project_name,
-    subdirs: include_subdir,
-    extra_cflags: [
-      '-DWEBRTC_LIBRARY_IMPL',
-    ] + platform_cflags,
-    libraries: [
-      libwebrtc_audio_processing,
-    ],
-    requires: [
-      # the audio processing header references absl's optional.h
-      'absl_base',
-    ]
+  libwebrtc_audio_processing,
+  description: 'WebRTC Audio Processing library',
+  subdirs: include_subdir,
+  requires: pc_requires,
+  extra_cflags: [
+    '-DWEBRTC_LIBRARY_IMPL',
+  ] + platform_cflags,
 )
 
 audio_processing_dep = declare_dependency(
@@ -202,15 +195,12 @@ audio_processing_dep = declare_dependency(
 meson.override_dependency(apm_project_name, audio_processing_dep)
 
 pkgconfig.generate(
-    name: ac_project_name,
-    description: 'WebRTC Audio Coding library',
-    version: ac_major_version + '.' + ac_minor_version,
-    filebase: ac_project_name,
-    subdirs: include_subdir,
-    extra_cflags: [
-      '-DWEBRTC_LIBRARY_IMPL',
-    ] + platform_cflags,
-    libraries: libwebrtc_audio_coding,
+  libwebrtc_audio_coding,
+  description: 'WebRTC Audio Coding library',
+  subdirs: include_subdir,
+  extra_cflags: [
+    '-DWEBRTC_LIBRARY_IMPL',
+  ] + platform_cflags,
 )
 
 audio_coding_dep = declare_dependency(
