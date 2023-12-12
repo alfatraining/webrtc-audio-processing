@@ -1,5 +1,5 @@
 project('webrtc-audio-processing', 'c', 'cpp',
-  version : '1.3',
+  version : '1.0',
   meson_version : '>= 0.63',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized',
@@ -166,6 +166,8 @@ endif
 common_cflags = [
   '-DWEBRTC_LIBRARY_IMPL',
   '-DWEBRTC_ENABLE_SYMBOL_EXPORT',
+  # avoid windows.h/winsock2.h conflicts
+  '-D_WINSOCKAPI_',
   '-DNDEBUG'
   ] + platform_cflags + os_cflags + arch_cflags
 common_cxxflags = common_cflags
