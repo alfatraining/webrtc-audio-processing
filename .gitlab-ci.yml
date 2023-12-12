@@ -19,8 +19,8 @@ variables:
   # CI runs, for example when adding new packages to FDO_DISTRIBUTION_PACKAGES.
   # The tag is an arbitrary string that identifies the exact container
   # contents.
-  BASE_TAG: '2023-05-25.0'
-  FDO_DISTRIBUTION_VERSION: '22.10'
+  BASE_TAG: '2023-12-12.1'
+  FDO_DISTRIBUTION_VERSION: '23.04'
   FDO_UPSTREAM_REPO: 'pulseaudio/webrtc-audio-processing'
 
 include:
@@ -41,6 +41,7 @@ include:
     # Otherwise the changes won't have effect since an old container image will
     # be used.
     FDO_DISTRIBUTION_PACKAGES: >-
+      ca-certificates
       g++
       gcc
       git-core
@@ -87,8 +88,8 @@ build-container-aarch64:
     - ninja -C builddir
     - DESTDIR=$PWD/_install ninja install -C builddir
       # Test that the pc files are usable
-    - PKG_CONFIG_PATH=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-processing-1
-    - PKG_CONFIG_PATH=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-coding-1
+    - PKG_CONFIG_PATH=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-processing-2
+    - PKG_CONFIG_PATH=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-coding-2
   artifacts:
     expire_in: '5 days'
     when: 'always'
@@ -104,8 +105,8 @@ build-container-aarch64:
     - ninja -C builddir
     - DESTDIR=$PWD/_install ninja install -C builddir
       # Test that the pc files are usable
-    - PKG_CONFIG_LIBDIR=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-processing-1
-    - PKG_CONFIG_LIBDIR=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-coding-1
+    - PKG_CONFIG_LIBDIR=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-processing-2
+    - PKG_CONFIG_LIBDIR=$PWD/_install/usr/lib/pkgconfig pkg-config --cflags --libs webrtc-audio-coding-2
   artifacts:
     expire_in: '5 days'
     when: 'always'
