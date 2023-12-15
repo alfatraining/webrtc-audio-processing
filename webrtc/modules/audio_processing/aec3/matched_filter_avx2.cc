@@ -13,6 +13,16 @@
 #include "modules/audio_processing/aec3/matched_filter.h"
 #include "rtc_base/checks.h"
 
+#ifdef _MSC_VER
+// Visual Studio
+#define LOOKUP_M128(v, i) v.m128_f32[i]
+#define LOOKUP_M256(v, i) v.m256_f32[i]
+#else
+// GCC/Clang
+#define LOOKUP_M128(v, i) v[i]
+#define LOOKUP_M256(v, i) v[i]
+#endif
+
 namespace webrtc {
 namespace aec3 {
 
@@ -81,14 +91,14 @@ void MatchedFilterCore_AccumulatedError_AVX2(
       s_inst_256_8 = _mm256_mul_ps(h_k_8, x_k_8);
       s_inst_hadd_256 = _mm256_hadd_ps(s_inst_256, s_inst_256_8);
       s_inst_hadd_256 = _mm256_hadd_ps(s_inst_hadd_256, s_inst_hadd_256);
-      s_acum += s_inst_hadd_256[0];
-      e_128[0] = s_acum - y[i];
-      s_acum += s_inst_hadd_256[4];
-      e_128[1] = s_acum - y[i];
-      s_acum += s_inst_hadd_256[1];
-      e_128[2] = s_acum - y[i];
-      s_acum += s_inst_hadd_256[5];
-      e_128[3] = s_acum - y[i];
+      s_acum += LOOKUP_M256(s_inst_hadd_256, 0);
+      LOOKUP_M128(e_128, 0) = s_acum - y[i];
+      s_acum += LOOKUP_M256(s_inst_hadd_256,4);
+      LOOKUP_M128(e_128, 1) = s_acum - y[i];
+      s_acum += LOOKUP_M256(s_inst_hadd_256,1);
+      LOOKUP_M128(e_128, 2) = s_acum - y[i];
+      s_acum += LOOKUP_M256(s_inst_hadd_256,5);
+      LOOKUP_M128(e_128, 3) = s_acum - y[i];
 
       __m128 accumulated_error = _mm_load_ps(a_p);
       accumulated_error = _mm_fmadd_ps(e_128, e_128, accumulated_error);
@@ -209,8 +219,8 @@ void MatchedFilterCore_AVX2(size_t x_start_index,
     x2_sum_256 = _mm256_add_ps(x2_sum_256, x2_sum_256_8);
     s_256 = _mm256_add_ps(s_256, s_256_8);
     __m128 sum = hsum_ab(x2_sum_256, s_256);
-    x2_sum += sum[0];
-    s += sum[1];
+    x2_sum += LOOKUP_M128(sum, 0);
+    s += LOOKUP_M128(sum, 1);
 
     // Compute the matched filter error.
     float e = y[i] - s;
