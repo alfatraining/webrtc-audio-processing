@@ -177,8 +177,8 @@ if have_x86
       ],
       dependencies: common_deps,
       include_directories: webrtc_inc,
-      c_args: common_cflags + apm_flags + ['-mavx2', '-mfma'],
-      cpp_args: common_cxxflags + apm_flags + ['-mavx2', '-mfma']
+      c_args: common_cflags + apm_flags + avx_flags,
+      cpp_args: common_cxxflags + apm_flags + avx_flags
     )
   ]
 endif

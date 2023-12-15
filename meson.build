@@ -174,6 +174,13 @@ common_cxxflags = common_cflags
 common_deps = os_deps + [absl_dep]
 webrtc_inc = include_directories('.')
 
+# FIXME: use the unstable-simd module instead
+if cc.get_define('_MSC_VER') != ''
+  avx_flags = ['/arch:AVX2']
+else
+  avx_flags = ['-mavx2', '-mfma']
+endif
+
 subdir('webrtc')
 
 pkgconfig = import('pkgconfig')

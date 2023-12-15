@@ -83,8 +83,8 @@ if have_x86
       ],
       dependencies: common_deps,
       include_directories: webrtc_inc,
-      c_args: common_cflags + ['-mavx2', '-mfma'],
-      cpp_args: common_cxxflags + ['-mavx2', '-mfma']
+      c_args: common_cflags + avx_flags,
+      cpp_args: common_cxxflags + avx_flags
     )
   ]
 endif
