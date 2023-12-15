@@ -163,7 +163,7 @@ vs2019 amd64:
     # Environment variables substitutions is done by PowerShell before calling
     # cmd.exe, that's why we use $env:FOO instead of %FOO%
     - cmd.exe /C "C:\BuildTools\Common7\Tools\VsDevCmd.bat -host_arch=amd64 -arch=$env:ARCH -app_platform=$env:PLAT &&
-        meson setup builddir &&
+        meson setup builddir -Dcpp_std=c++20 &&
         meson compile --verbose -C builddir"
 
 # Update from:
