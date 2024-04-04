@@ -25,6 +25,13 @@ typedef HRESULT(WINAPI* RTC_SetThreadDescription)(HANDLE hThread,
                                                   PCWSTR lpThreadDescription);
 #endif
 
+#if defined(WEBRTC_FUCHSIA)
+#include <string.h>
+#include <zircon/syscalls.h>
+
+#include "rtc_base/checks.h"
+#endif
+
 namespace rtc {
 
 PlatformThreadId CurrentThreadId() {
@@ -99,18 +106,20 @@ void SetCurrentThreadName(const char* name) {
 
 #pragma warning(push)
 #pragma warning(disable : 6320 6322)
-#ifndef __MINGW32__
   __try {
     ::RaiseException(0x406D1388, 0, sizeof(threadname_info) / sizeof(ULONG_PTR),
                      reinterpret_cast<ULONG_PTR*>(&threadname_info));
   } __except (EXCEPTION_EXECUTE_HANDLER) {  // NOLINT
   }
-#endif
 #pragma warning(pop)
 #elif defined(WEBRTC_LINUX) || defined(WEBRTC_ANDROID)
   prctl(PR_SET_NAME, reinterpret_cast<unsigned long>(name));  // NOLINT
 #elif defined(WEBRTC_MAC) || defined(WEBRTC_IOS)
   pthread_setname_np(name);
+#elif defined(WEBRTC_FUCHSIA)
+  zx_status_t status = zx_object_set_property(zx_thread_self(), ZX_PROP_NAME,
+                                              name, strlen(name));
+  RTC_DCHECK_EQ(status, ZX_OK);
 #endif
 }
 

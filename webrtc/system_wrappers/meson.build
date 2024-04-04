@@ -1,5 +1,6 @@
 system_wrappers_sources = [
   'source/cpu_features.cc',
+  'source/denormal_disabler.cc',
   'source/field_trial.cc',
   'source/metrics.cc',
   'source/sleep.cc',

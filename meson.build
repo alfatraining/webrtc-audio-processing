@@ -1,5 +1,5 @@
 project('webrtc-audio-processing', 'c', 'cpp',
-  version : '1.3',
+  version : '2.0',
   meson_version : '>= 0.63',
   default_options : [ 'warning_level=1',
                       'buildtype=debugoptimized',
@@ -166,11 +166,20 @@ endif
 common_cflags = [
   '-DWEBRTC_LIBRARY_IMPL',
   '-DWEBRTC_ENABLE_SYMBOL_EXPORT',
+  # avoid windows.h/winsock2.h conflicts
+  '-D_WINSOCKAPI_',
   '-DNDEBUG'
   ] + platform_cflags + os_cflags + arch_cflags
 common_cxxflags = common_cflags
 common_deps = os_deps + [absl_dep]
 webrtc_inc = include_directories('.')
+
+# FIXME: use the unstable-simd module instead
+if cc.get_define('_MSC_VER') != ''
+  avx_flags = ['/arch:AVX2']
+else
+  avx_flags = ['-mavx2', '-mfma']
+endif
 
 subdir('webrtc')
 

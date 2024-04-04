@@ -21,24 +21,22 @@ rtc_library("aligned_malloc") {
 }
 
 # Test only utility.
-# TODO: Tag with `testonly = true` once all depending targets are correctly
-# tagged.
 rtc_library("fifo_buffer") {
+  testonly = true
   visibility = [
     ":unittests",
     "..:rtc_base_tests_utils",
     "..:rtc_base_unittests",
-    "../../p2p:rtc_p2p",  # This needs to be fixed.
   ]
   sources = [
     "fifo_buffer.cc",
     "fifo_buffer.h",
   ]
   deps = [
-    "..:rtc_base",
+    "..:stream",
+    "..:threading",
+    "../../api/task_queue:pending_task_safety_flag",
     "../synchronization:mutex",
-    "../task_utils:pending_task_safety_flag",
-    "../task_utils:to_queued_task",
   ]
 }
 
@@ -46,11 +44,18 @@ rtc_library("unittests") {
   testonly = true
   sources = [
     "aligned_malloc_unittest.cc",
+    "always_valid_pointer_unittest.cc",
     "fifo_buffer_unittest.cc",
   ]
   deps = [
     ":aligned_malloc",
+    ":always_valid_pointer",
     ":fifo_buffer",
     "../../test:test_support",
   ]
+}
+
+rtc_source_set("always_valid_pointer") {
+  sources = [ "always_valid_pointer.h" ]
+  deps = [ "..:checks" ]
 }
