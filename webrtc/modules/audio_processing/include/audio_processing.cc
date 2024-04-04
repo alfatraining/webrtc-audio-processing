@@ -28,6 +28,8 @@ std::string NoiseSuppressionLevelToString(
     case AudioProcessing::Config::NoiseSuppression::Level::kVeryHigh:
       return "VeryHigh";
   }
+  RTC_NOTREACHED();
+  __builtin_unreachable ();
 }
 
 std::string GainController1ModeToString(
@@ -40,6 +42,8 @@ std::string GainController1ModeToString(
     case AudioProcessing::Config::GainController1::Mode::kFixedDigital:
       return "FixedDigital";
   }
+  RTC_NOTREACHED();
+  __builtin_unreachable ();
 }
 
 std::string GainController2LevelEstimatorToString(
@@ -50,6 +54,8 @@ std::string GainController2LevelEstimatorToString(
     case AudioProcessing::Config::GainController2::LevelEstimator::kPeak:
       return "Peak";
   }
+  RTC_NOTREACHED();
+  __builtin_unreachable ();
 }
 
 int GetDefaultMaxInternalRate() {

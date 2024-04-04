@@ -42,6 +42,8 @@ float GetLevel(const VadLevelAnalyzer::Result& vad_level,
       return vad_level.peak_dbfs;
       break;
   }
+  RTC_NOTREACHED();
+  __builtin_unreachable ();
 }
 
 }  // namespace
