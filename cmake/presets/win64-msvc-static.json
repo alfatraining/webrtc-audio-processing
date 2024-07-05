@@ -1,0 +1,82 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 23,
+        "patch": 0
+    },
+    "include": [
+        "common.json"
+    ],
+    "configurePresets": [
+        {
+            "inherits": "common",
+            "name": "win64-msvc-static",
+            "generator": "Visual Studio 17 2022",
+            "cacheVariables": {
+                "CMAKE_MSVC_RUNTIME_LIBRARY": {
+                    "type": "STRING",
+                    "value": "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+                },
+                "CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE": {
+                    "type": "STRING",
+                    "value": "x64"
+                },
+                "CMAKE_GENERATOR_PLATFORM": {
+                    "type": "STRING",
+                    "value": "x64"
+                }
+            },
+            "environment": {
+                "CMAKE_PREFIX_PATH": "$penv{CMAKE_PREFIX_PATH}${pathListSep}${sourceParentDir}/alfadeps/build-win-vs17/install"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "win64-msvc-static",
+            "configurePreset": "win64-msvc-static",
+            "configuration": "release",
+            "targets": [
+                "install"
+            ]
+        },
+        {
+            "name": "win64-msvc-static-debug",
+            "inherits": "win64-msvc-static",
+            "configuration": "debug"
+        }
+    ],
+    "workflowPresets": [
+        {
+            "name": "win64-msvc-static",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "win64-msvc-static"
+                },
+                {
+                    "type": "build",
+                    "name": "win64-msvc-static"
+                }
+            ]
+        },
+        {
+            "name": "win64-msvc-static-dev",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "win64-msvc-static"
+                },
+                {
+                    "type": "build",
+                    "name": "win64-msvc-static"
+                },
+                {
+                    "type": "build",
+                    "name": "win64-msvc-static-debug"
+                }
+            ]
+        }
+    ]
+}

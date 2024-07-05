@@ -1,0 +1,3 @@
+add_subdirectory(audio_coding)
+add_subdirectory(audio_processing)
+add_subdirectory(third_party/fft)
