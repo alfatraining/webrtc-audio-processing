@@ -265,6 +265,8 @@ class RTC_EXPORT AudioProcessing : public rtc::RefCountInterface {
     // Enables reporting of |voice_detected| in webrtc::AudioProcessingStats.
     struct VoiceDetection {
       bool enabled = false;
+      enum Likelihood { kVeryLowLikelihood, kLowLikelihood, kModerateLikelihood, kHighLikelihood };
+      Likelihood likelihood = kVeryLowLikelihood;
     } voice_detection;
 
     // Enables automatic gain control (AGC) functionality.
