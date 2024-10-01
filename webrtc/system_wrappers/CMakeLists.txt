@@ -3,9 +3,12 @@ add_library(system_wrappers OBJECT
     "source/field_trial.cc"
     "source/metrics.cc"
     "source/sleep.cc"
+    "source/denormal_disabler.cc"
 )
 
-target_link_libraries(system_wrappers PRIVATE absl::strings)
+target_link_libraries(system_wrappers
+    PRIVATE absl::strings
+    PRIVATE experiments)
 
 # [ks]: we probably don't need to install these as only .cc files access those
 # install(FILES 
