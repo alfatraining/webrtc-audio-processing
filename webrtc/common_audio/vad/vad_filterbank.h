@@ -29,7 +29,7 @@
 // The values are given in Q4 and written to |features|. Further, an approximate
 // overall energy is returned. The return value is used in
 // WebRtcVad_GmmProbability() as a signal indicator, hence it is arbitrary above
-// the threshold |kMinEnergy|.
+// the threshold |min_energy|.
 //
 // - self         [i/o] : State information of the VAD.
 // - data_in      [i]   : Input audio data, for feature extraction.

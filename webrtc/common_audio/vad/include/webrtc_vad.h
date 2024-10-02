@@ -54,6 +54,15 @@ int WebRtcVad_Init(VadInst* handle);
 //                       has not been initialized).
 int WebRtcVad_set_mode(VadInst* handle, int mode);
 
+// Sets the VAD minimum energy.
+//
+// - handle [i/o]   : VAD instance.
+// - min_energy [i] : Minimum Energy required to trigger VAD (default = 10)
+//
+// returns        : 0 - (OK),
+//                 -1 - (null pointer or the VAD instance has not been initialized).
+int WebRtcVad_set_min_energy(VadInst* handle, int min_energy);
+
 // Calculates a VAD decision for the |audio_frame|. For valid sampling rates
 // frame lengths, see the description of WebRtcVad_ValidRatesAndFrameLengths().
 //

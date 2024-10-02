@@ -20,7 +20,7 @@
 enum { kNumChannels = 6 };   // Number of frequency bands (named channels).
 enum { kNumGaussians = 2 };  // Number of Gaussians per channel in the GMM.
 enum { kTableSize = kNumChannels * kNumGaussians };
-enum { kMinEnergy = 10 };  // Minimum energy required to trigger audio signal.
+enum { kDefaultMinEnergy = 10 };  // Default minimum energy required to trigger audio signal.
 
 typedef struct VadInstT_ {
   int vad;
@@ -46,6 +46,7 @@ typedef struct VadInstT_ {
   int16_t over_hang_max_2[3];
   int16_t individual[3];
   int16_t total[3];
+  int16_t min_energy; // Minimum energy required to trigger audio signal.
 
   int init_flag;
 } VadInstT;

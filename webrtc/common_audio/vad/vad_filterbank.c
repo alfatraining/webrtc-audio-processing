@@ -147,11 +147,11 @@ static void SplitFilter(const int16_t* data_in, size_t data_length,
 // - total_energy [i/o] : An external energy updated with the energy of
 //                        |data_in|.
 //                        NOTE: |total_energy| is only updated if
-//                        |total_energy| <= |kMinEnergy|.
+//                        |total_energy| <= |min_energy|.
 // - log_energy   [o]   : 10 * log10("energy of |data_in|") given in Q4.
 static void LogOfEnergy(const int16_t* data_in, size_t data_length,
                         int16_t offset, int16_t* total_energy,
-                        int16_t* log_energy) {
+                        int16_t* log_energy, int min_energy) {
   // |tot_rshifts| accumulates the number of right shifts performed on |energy|.
   int tot_rshifts = 0;
   // The |energy| will be normalized to 15 bits. We use unsigned integer because
@@ -223,18 +223,18 @@ static void LogOfEnergy(const int16_t* data_in, size_t data_length,
   *log_energy += offset;
 
   // Update the approximate |total_energy| with the energy of |data_in|, if
-  // |total_energy| has not exceeded |kMinEnergy|. |total_energy| is used as an
+  // |total_energy| has not exceeded |min_energy|. |total_energy| is used as an
   // energy indicator in WebRtcVad_GmmProbability() in vad_core.c.
-  if (*total_energy <= kMinEnergy) {
+  if (*total_energy <= min_energy) {
     if (tot_rshifts >= 0) {
-      // We know by construction that the |energy| > |kMinEnergy| in Q0, so add
-      // an arbitrary value such that |total_energy| exceeds |kMinEnergy|.
-      *total_energy += kMinEnergy + 1;
+      // We know by construction that the |energy| > |min_energy| in Q0, so add
+      // an arbitrary value such that |total_energy| exceeds |min_energy|.
+      *total_energy += min_energy + 1;
     } else {
       // By construction |energy| is represented by 15 bits, hence any number of
       // right shifted |energy| will fit in an int16_t. In addition, adding the
       // value to |total_energy| is wrap around safe as long as
-      // |kMinEnergy| < 8192.
+      // |min_energy| < 8192.
       *total_energy += (int16_t) (energy >> -tot_rshifts);  // Q0.
     }
   }
@@ -277,10 +277,10 @@ int16_t WebRtcVad_CalculateFeatures(VadInstT* self, const int16_t* data_in,
   // Energy in 3000 Hz - 4000 Hz.
   length >>= 1;  // |data_length| / 4 <=> bandwidth = 1000 Hz.
 
-  LogOfEnergy(hp_60, length, kOffsetVector[5], &total_energy, &features[5]);
+  LogOfEnergy(hp_60, length, kOffsetVector[5], &total_energy, &features[5], self->min_energy);
 
   // Energy in 2000 Hz - 3000 Hz.
-  LogOfEnergy(lp_60, length, kOffsetVector[4], &total_energy, &features[4]);
+  LogOfEnergy(lp_60, length, kOffsetVector[4], &total_energy, &features[4], self->min_energy);
 
   // For the lower band (0 Hz - 2000 Hz) split at 1000 Hz and downsample.
   frequency_band = 2;
@@ -293,7 +293,7 @@ int16_t WebRtcVad_CalculateFeatures(VadInstT* self, const int16_t* data_in,
 
   // Energy in 1000 Hz - 2000 Hz.
   length >>= 1;  // |data_length| / 4 <=> bandwidth = 1000 Hz.
-  LogOfEnergy(hp_60, length, kOffsetVector[3], &total_energy, &features[3]);
+  LogOfEnergy(hp_60, length, kOffsetVector[3], &total_energy, &features[3], self->min_energy);
 
   // For the lower band (0 Hz - 1000 Hz) split at 500 Hz and downsample.
   frequency_band = 3;
@@ -305,7 +305,7 @@ int16_t WebRtcVad_CalculateFeatures(VadInstT* self, const int16_t* data_in,
 
   // Energy in 500 Hz - 1000 Hz.
   length >>= 1;  // |data_length| / 8 <=> bandwidth = 500 Hz.
-  LogOfEnergy(hp_120, length, kOffsetVector[2], &total_energy, &features[2]);
+  LogOfEnergy(hp_120, length, kOffsetVector[2], &total_energy, &features[2], self->min_energy);
 
   // For the lower band (0 Hz - 500 Hz) split at 250 Hz and downsample.
   frequency_band = 4;
@@ -317,13 +317,13 @@ int16_t WebRtcVad_CalculateFeatures(VadInstT* self, const int16_t* data_in,
 
   // Energy in 250 Hz - 500 Hz.
   length >>= 1;  // |data_length| / 16 <=> bandwidth = 250 Hz.
-  LogOfEnergy(hp_60, length, kOffsetVector[1], &total_energy, &features[1]);
+  LogOfEnergy(hp_60, length, kOffsetVector[1], &total_energy, &features[1], self->min_energy);
 
   // Remove 0 Hz - 80 Hz, by high pass filtering the lower band.
   HighPassFilter(lp_60, length, self->hp_filter_state, hp_120);
 
   // Energy in 80 Hz - 250 Hz.
-  LogOfEnergy(hp_120, length, kOffsetVector[0], &total_energy, &features[0]);
+  LogOfEnergy(hp_120, length, kOffsetVector[0], &total_energy, &features[0], self->min_energy);
 
   return total_energy;
 }

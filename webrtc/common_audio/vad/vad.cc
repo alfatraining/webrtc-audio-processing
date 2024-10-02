@@ -21,8 +21,8 @@ namespace {
 
 class VadImpl final : public Vad {
  public:
-  explicit VadImpl(Aggressiveness aggressiveness)
-      : handle_(nullptr), aggressiveness_(aggressiveness) {
+  explicit VadImpl(Aggressiveness aggressiveness, int min_energy)
+      : handle_(nullptr), aggressiveness_(aggressiveness), min_energy_(min_energy) {
     Reset();
   }
 
@@ -50,17 +50,19 @@ class VadImpl final : public Vad {
     RTC_CHECK(handle_);
     RTC_CHECK_EQ(WebRtcVad_Init(handle_), 0);
     RTC_CHECK_EQ(WebRtcVad_set_mode(handle_, aggressiveness_), 0);
+    RTC_CHECK_EQ(WebRtcVad_set_min_energy(handle_, min_energy_), 0);
   }
 
  private:
   VadInst* handle_;
   Aggressiveness aggressiveness_;
+  int min_energy_;
 };
 
 }  // namespace
 
-std::unique_ptr<Vad> CreateVad(Vad::Aggressiveness aggressiveness) {
-  return std::unique_ptr<Vad>(new VadImpl(aggressiveness));
+std::unique_ptr<Vad> CreateVad(Vad::Aggressiveness aggressiveness, int min_energy) {
+  return std::unique_ptr<Vad>(new VadImpl(aggressiveness, min_energy));
 }
 
 }  // namespace webrtc

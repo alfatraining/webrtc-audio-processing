@@ -34,7 +34,7 @@ class VoiceDetection::Vad {
   VadInst* state_ = nullptr;
 };
 
-VoiceDetection::VoiceDetection(int sample_rate_hz, Likelihood likelihood)
+VoiceDetection::VoiceDetection(int sample_rate_hz, Likelihood likelihood, int min_energy)
     : sample_rate_hz_(sample_rate_hz),
       frame_size_samples_(static_cast<size_t>(sample_rate_hz_ / 100)),
       likelihood_(likelihood),
@@ -57,8 +57,14 @@ VoiceDetection::VoiceDetection(int sample_rate_hz, Likelihood likelihood)
       RTC_NOTREACHED();
       break;
   }
-  int error = WebRtcVad_set_mode(vad_->state(), mode);
-  RTC_DCHECK_EQ(0, error);
+  {
+    int error = WebRtcVad_set_mode(vad_->state(), mode);
+    RTC_DCHECK_EQ(0, error);
+  }
+  {
+    int error = WebRtcVad_set_min_energy(vad_->state(), min_energy);
+    RTC_DCHECK_EQ(0, error);
+  }
 }
 
 VoiceDetection::~VoiceDetection() {}

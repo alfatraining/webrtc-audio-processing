@@ -35,7 +35,7 @@ class VoiceDetection {
     kHighLikelihood
   };
 
-  VoiceDetection(int sample_rate_hz, Likelihood likelihood);
+  VoiceDetection(int sample_rate_hz, Likelihood likelihood, int min_energy);
   ~VoiceDetection();
 
   VoiceDetection(VoiceDetection&) = delete;

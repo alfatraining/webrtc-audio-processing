@@ -172,7 +172,7 @@ static int16_t GmmProbability(VadInstT* self, int16_t* features,
     totalTest = self->total[2];
   }
 
-  if (total_power > kMinEnergy) {
+  if (total_power > self->min_energy) {
     // The signal power of current frame is large enough for processing. The
     // processing consists of two parts:
     // 1) Calculating the likelihood of speech and thereby a VAD decision.
@@ -487,7 +487,7 @@ static int16_t GmmProbability(VadInstT* self, int16_t* features,
   return vadflag;
 }
 
-// Initialize the VAD. Set aggressiveness mode to default value.
+// Initialize the VAD. Set aggressiveness mode and min energy to default value.
 int WebRtcVad_InitCore(VadInstT* self) {
   int i;
 
@@ -538,6 +538,8 @@ int WebRtcVad_InitCore(VadInstT* self) {
   if (WebRtcVad_set_mode_core(self, kDefaultMode) != 0) {
     return -1;
   }
+  // Set minimum energy to default (=|kDefaultMinEnergy|).
+  self->min_energy = kDefaultMinEnergy;
 
   self->init_flag = kInitCheck;
 

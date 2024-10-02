@@ -576,7 +576,8 @@ void AudioProcessingImpl::ApplyConfig(const AudioProcessing::Config& config) {
 
   const bool voice_detection_config_changed =
       config_.voice_detection.enabled != config.voice_detection.enabled ||
-      config_.voice_detection.likelihood != config.voice_detection.likelihood;
+      config_.voice_detection.likelihood != config.voice_detection.likelihood ||
+      config_.voice_detection.min_energy != config.voice_detection.min_energy;
 
   const bool ns_config_changed =
       config_.noise_suppression.enabled != config.noise_suppression.enabled ||
@@ -1670,7 +1671,7 @@ void AudioProcessingImpl::InitializeHighPassFilter(bool forced_reset) {
 void AudioProcessingImpl::InitializeVoiceDetector() {
   if (config_.voice_detection.enabled) {
     submodules_.voice_detector = std::make_unique<VoiceDetection>(
-        proc_split_sample_rate_hz(), VoiceDetection::Likelihood(config_.voice_detection.likelihood));
+        proc_split_sample_rate_hz(), VoiceDetection::Likelihood(config_.voice_detection.likelihood), config_.voice_detection.min_energy);
   } else {
     submodules_.voice_detector.reset();
   }

@@ -267,6 +267,7 @@ class RTC_EXPORT AudioProcessing : public rtc::RefCountInterface {
       bool enabled = false;
       enum Likelihood { kVeryLowLikelihood, kLowLikelihood, kModerateLikelihood, kHighLikelihood };
       Likelihood likelihood = kVeryLowLikelihood;
+      int min_energy = 10; //3..10
     } voice_detection;
 
     // Enables automatic gain control (AGC) functionality.

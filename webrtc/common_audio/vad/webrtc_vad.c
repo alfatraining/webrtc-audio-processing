@@ -53,6 +53,21 @@ int WebRtcVad_set_mode(VadInst* handle, int mode) {
   return WebRtcVad_set_mode_core(self, mode);
 }
 
+int WebRtcVad_set_min_energy(VadInst * handle, int min_energy)
+{
+  VadInstT* self = (VadInstT*) handle;
+
+  if (handle == NULL) {
+    return -1;
+  }
+  if (self->init_flag != kInitCheck) {
+    return -1;
+  }
+
+  self->min_energy = min_energy;
+  return 0;
+}
+
 int WebRtcVad_Process(VadInst* handle, int fs, const int16_t* audio_frame,
                       size_t frame_length) {
   int vad = -1;
