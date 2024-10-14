@@ -360,6 +360,9 @@ if(ARCH_X86_64)
         set_source_files_properties(${avx2_sources} PROPERTIES
             COMPILE_FLAGS "-mavx2 -mfma")
     endif()
+elseif(ARCH_HAS_NEON)
+    target_sources(webrtc_audio_processing PRIVATE
+        "aecm/aecm_core_neon.cc")
 endif()
 
 target_link_libraries(webrtc_audio_processing
