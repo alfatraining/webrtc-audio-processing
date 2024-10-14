@@ -58,12 +58,6 @@ add_library(rtc_base OBJECT
     "numerics/sequence_number_util.h"
 )
 
-if(WIN32)
-    # target_sources(rtc_base PRIVATE "synchronization/rw_lock_win.cc")
-else()
-    target_sources(rtc_base PRIVATE "synchronization/rw_lock_posix.cc")
-endif()
-
 # WARNING: evaluate this
 target_link_options(rtc_base PUBLIC "/EHa")
 

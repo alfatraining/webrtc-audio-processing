@@ -82,22 +82,25 @@ void MatchedFilterCore_AccumulatedError_AVX2(
       s_inst_hadd_256 = _mm256_hadd_ps(s_inst_256, s_inst_256_8);
       s_inst_hadd_256 = _mm256_hadd_ps(s_inst_hadd_256, s_inst_hadd_256);
       // [KS] - BEGIN: I had to apply a patch for this to compile on VS2022
-      s_acum += s_inst_hadd_256.m256_f32[0];
-      e_128.m128_f32[0] = s_acum - y[i];
-      s_acum += s_inst_hadd_256.m256_f32[4];
-      e_128.m128_f32[1] = s_acum - y[i];
-      s_acum += s_inst_hadd_256.m256_f32[1];
-      e_128.m128_f32[2] = s_acum - y[i];
-      s_acum += s_inst_hadd_256.m256_f32[5];
-      e_128.m128_f32[3] = s_acum - y[i];
-      //s_acum += s_inst_hadd_256[0];
-      //e_128[0] = s_acum - y[i];
-      //s_acum += s_inst_hadd_256[4];
-      //e_128[1] = s_acum - y[i];
-      //s_acum += s_inst_hadd_256[1];
-      //e_128[2] = s_acum - y[i];
-      //s_acum += s_inst_hadd_256[5];
-      //e_128[3] = s_acum - y[i];
+      #if defined(_MSC_VER)
+        s_acum += s_inst_hadd_256.m256_f32[0];
+        e_128.m128_f32[0] = s_acum - y[i];
+        s_acum += s_inst_hadd_256.m256_f32[4];
+        e_128.m128_f32[1] = s_acum - y[i];
+        s_acum += s_inst_hadd_256.m256_f32[1];
+        e_128.m128_f32[2] = s_acum - y[i];
+        s_acum += s_inst_hadd_256.m256_f32[5];
+        e_128.m128_f32[3] = s_acum - y[i];
+      #else
+        s_acum += s_inst_hadd_256[0];
+        e_128[0] = s_acum - y[i];
+        s_acum += s_inst_hadd_256[4];
+        e_128[1] = s_acum - y[i];
+        s_acum += s_inst_hadd_256[1];
+        e_128[2] = s_acum - y[i];
+        s_acum += s_inst_hadd_256[5];
+        e_128[3] = s_acum - y[i];
+      #endif
       // [KS] - END
 
       __m128 accumulated_error = _mm_load_ps(a_p);
@@ -220,10 +223,13 @@ void MatchedFilterCore_AVX2(size_t x_start_index,
     s_256 = _mm256_add_ps(s_256, s_256_8);
     __m128 sum = hsum_ab(x2_sum_256, s_256);
     // [KS] - BEGIN: Patch to make it build under VS2022
-    x2_sum += sum.m128_f32[0];
-    s += sum.m128_f32[1];
-    //x2_sum += sum[0];
-    //s += sum[1];
+    #if defined(_MSC_VER)
+      x2_sum += sum.m128_f32[0];
+      s += sum.m128_f32[1];
+    #else
+      x2_sum += sum[0];
+      s += sum[1];
+    #endif
     // [KS] - END
 
     // Compute the matched filter error.
