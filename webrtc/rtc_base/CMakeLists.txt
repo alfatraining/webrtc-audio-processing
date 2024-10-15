@@ -21,6 +21,7 @@ add_library(rtc_base OBJECT
     # "synchronization/sequence_checker.cc" # NOTE: This should likely be removed!
     "synchronization/sequence_checker_internal.cc"
     "system/file_wrapper.cc"
+    "system/warn_current_thread_is_deadlocked.h"
     "time_utils.cc"
     "zero_memory.cc"
     "checks.cc"
@@ -57,6 +58,11 @@ add_library(rtc_base OBJECT
     "numerics/sequence_number_unwrapper.h"
     "numerics/sequence_number_util.h"
 )
+
+if(ANDROID)
+    # this function is inlined on other platforms from the header file
+    target_sources(rtc_base PRIVATE "system/warn_current_thread_is_deadlocked.cc")
+endif()
 
 # WARNING: evaluate this
 target_link_options(rtc_base PUBLIC "/EHa")

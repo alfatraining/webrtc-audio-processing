@@ -326,6 +326,11 @@ add_library(webrtc_audio_processing
     $<TARGET_OBJECTS:rnnoise>
 )
 
+if(ANDROID)
+    target_sources(webrtc_audio_processing PRIVATE
+        $<TARGET_OBJECTS:android_native_api>)
+endif()
+
 add_compile_definitions(webrtc_audio_processing PRIVATE
     WEBRTC_APM_DEBUG_DUMP=0)
 

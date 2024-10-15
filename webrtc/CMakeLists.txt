@@ -1,5 +1,9 @@
 include_directories(.)
 
+if(ANDROID)
+    add_subdirectory(sdk/android/native_api)
+endif()
+
 add_subdirectory(api)
 add_subdirectory(common_audio)
 add_subdirectory(experiments)
