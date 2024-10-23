@@ -1,4 +1,6 @@
-add_library(api OBJECT
+add_library(
+    api
+    OBJECT
     "audio/audio_frame.cc"
     "audio/channel_layout.cc"
     "audio/echo_canceller3_config.cc"
@@ -29,7 +31,8 @@ add_library(api OBJECT
 
 target_link_libraries(api PRIVATE absl::optional)
 
-install(FILES
+install(
+    FILES
         "array_view.h"
         "scoped_refptr.h"
         "ref_count.h"
@@ -37,7 +40,8 @@ install(FILES
     DESTINATION include/api
 )
 
-install(FILES
+install(
+    FILES
         "audio/echo_canceller3_config.h"
         "audio/echo_control.h"
         "audio/audio_processing_statistics.h"
@@ -45,12 +49,6 @@ install(FILES
     DESTINATION include/api/audio
 )
 
-INSTALL(FILES
-    "task_queue/task_queue_base.h"
-    DESTINATION include/api/task_queue
-)
+install(FILES "task_queue/task_queue_base.h" DESTINATION include/api/task_queue)
 
-INSTALL(FILES
-    "units/time_delta.h"
-    DESTINATION include/api/units
-)
+install(FILES "units/time_delta.h" DESTINATION include/api/units)

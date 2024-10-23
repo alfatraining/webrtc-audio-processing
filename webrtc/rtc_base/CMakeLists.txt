@@ -1,4 +1,6 @@
-add_library(rtc_base OBJECT
+add_library(
+    rtc_base
+    OBJECT
     "checks.cc"
     "event.cc"
     "event_tracer.cc"
@@ -67,41 +69,36 @@ endif()
 # WARNING: evaluate this
 target_link_options(rtc_base PUBLIC "/EHa")
 
-target_link_libraries(rtc_base
-    PRIVATE absl::meta
-    PUBLIC experiments)
+target_link_libraries(rtc_base PRIVATE absl::meta PUBLIC experiments)
 
-install(FILES 
-    "arraysize.h"
-    "checks.h"
-    "constructor_magic.h"
-    "deprecation.h"
-    "ref_count.h"
-    "type_traits.h"
-    "thread_annotations.h"
+install(
+    FILES
+        "arraysize.h"
+        "checks.h"
+        "constructor_magic.h"
+        "deprecation.h"
+        "ref_count.h"
+        "type_traits.h"
+        "thread_annotations.h"
     DESTINATION include/rtc_base
 )
 
-install(FILES 
-    "numerics/safe_compare.h"
-    "numerics/safe_conversions.h"
-    "numerics/safe_conversions_impl.h"
+install(
+    FILES
+        "numerics/safe_compare.h"
+        "numerics/safe_conversions.h"
+        "numerics/safe_conversions_impl.h"
     DESTINATION include/rtc_base/numerics
 )
 
-install(FILES 
-    "system/file_wrapper.h"
-    "system/inline.h"
-    "system/rtc_export.h"
+install(
+    FILES
+        "system/file_wrapper.h"
+        "system/inline.h"
+        "system/rtc_export.h"
     DESTINATION include/rtc_base/system
 )
 
-install(FILES 
-    "units/unit_base.h"
-    DESTINATION include/rtc_base/units
-)
+install(FILES "units/unit_base.h" DESTINATION include/rtc_base/units)
 
-install(FILES 
-    "numerics/divide_round.h"
-    DESTINATION include/rtc_base/numerics
-)
+install(FILES "numerics/divide_round.h" DESTINATION include/rtc_base/numerics)

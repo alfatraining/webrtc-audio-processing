@@ -1,4 +1,6 @@
-add_library(common_audio OBJECT
+add_library(
+    common_audio
+    OBJECT
     "audio_converter.cc"
     "audio_util.cc"
     "channel_buffer.cc"
@@ -58,51 +60,66 @@ add_library(common_audio OBJECT
     "window_generator.cc"
 )
 
-target_link_libraries(common_audio
-    PRIVATE absl::meta)
+target_link_libraries(common_audio PRIVATE absl::meta)
 
 if(ARCH_X86_64)
-    target_sources(common_audio PRIVATE
-        "fir_filter_sse.cc"
-        "resampler/sinc_resampler_sse.cc"
-        "third_party/ooura/fft_size_128/ooura_fft_sse2.cc"
+    target_sources(
+        common_audio
+        PRIVATE
+            "fir_filter_sse.cc"
+            "resampler/sinc_resampler_sse.cc"
+            "third_party/ooura/fft_size_128/ooura_fft_sse2.cc"
     )
-    list(APPEND avx2_sources
+    list(
+        APPEND
+        avx2_sources
         "fir_filter_avx2.cc"
         "resampler/sinc_resampler_avx2.cc"
     )
     target_sources(common_audio PRIVATE ${avx2_sources})
     if(MSVC)
-        set_source_files_properties(${avx2_sources} PROPERTIES
-            COMPILE_FLAGS "/arch:AVX2")
+        set_source_files_properties(
+            ${avx2_sources}
+            PROPERTIES
+                COMPILE_FLAGS
+                    "/arch:AVX2"
+        )
     else()
-        set_source_files_properties(${avx2_sources} PROPERTIES
-            COMPILE_FLAGS "-mavx2 -mfma")
+        set_source_files_properties(
+            ${avx2_sources}
+            PROPERTIES
+                COMPILE_FLAGS
+                    "-mavx2 -mfma"
+        )
     endif()
 endif()
 
 if(ARCH_ARMV7)
-    target_sources(common_audio PRIVATE
-        "signal_processing/complex_bit_reverse_arm.S"
-        "third_party/spl_sqrt_floor/spl_sqrt_floor_arm.S"
+    target_sources(
+        common_audio
+        PRIVATE
+            "signal_processing/complex_bit_reverse_arm.S"
+            "third_party/spl_sqrt_floor/spl_sqrt_floor_arm.S"
     )
-    target_sources(common_audio PRIVATE
-        "signal_processing/filter_ar_fast_q12_armv7.S"
-    )
+    target_sources(common_audio PRIVATE "signal_processing/filter_ar_fast_q12_armv7.S")
 else()
-    target_sources(common_audio PRIVATE
-        "signal_processing/complex_bit_reverse.c"
-        "signal_processing/filter_ar_fast_q12.c"
+    target_sources(
+        common_audio
+        PRIVATE
+            "signal_processing/complex_bit_reverse.c"
+            "signal_processing/filter_ar_fast_q12.c"
     )
 endif()
 
 if(ARCH_HAS_NEON)
-    target_sources(common_audio PRIVATE
-        "fir_filter_neon.cc"
-        "resampler/sinc_resampler_neon.cc"
-        "signal_processing/cross_correlation_neon.c"
-        "signal_processing/downsample_fast_neon.c"
-        "signal_processing/min_max_operations_neon.c"
-        "third_party/ooura/fft_size_128/ooura_fft_neon.cc"
+    target_sources(
+        common_audio
+        PRIVATE
+            "fir_filter_neon.cc"
+            "resampler/sinc_resampler_neon.cc"
+            "signal_processing/cross_correlation_neon.c"
+            "signal_processing/downsample_fast_neon.c"
+            "signal_processing/min_max_operations_neon.c"
+            "third_party/ooura/fft_size_128/ooura_fft_neon.cc"
     )
 endif()

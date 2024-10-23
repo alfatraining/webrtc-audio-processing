@@ -1,4 +1,5 @@
-add_library(webrtc_audio_processing
+add_library(
+    webrtc_audio_processing
     "aec3/adaptive_fir_filter.cc"
     "aec3/adaptive_fir_filter.h"
     "aec3/adaptive_fir_filter_erl.cc"
@@ -327,29 +328,32 @@ add_library(webrtc_audio_processing
 )
 
 if(ANDROID)
-    target_sources(webrtc_audio_processing PRIVATE
-        $<TARGET_OBJECTS:android_native_api>)
+    target_sources(webrtc_audio_processing PRIVATE $<TARGET_OBJECTS:android_native_api>)
 endif()
 
-add_compile_definitions(webrtc_audio_processing PRIVATE
-    WEBRTC_APM_DEBUG_DUMP=0)
-
-install(FILES
-    "include/audio_processing.h"
-    DESTINATION include/modules/audio_processing/include/
+add_compile_definitions(
+    webrtc_audio_processing
+    PRIVATE
+    WEBRTC_APM_DEBUG_DUMP=0
 )
 
+install(FILES "include/audio_processing.h" DESTINATION include/modules/audio_processing/include/)
+
 if(WIN32)
-    target_compile_definitions(webrtc_audio_processing PUBLIC
-        WEBRTC_WIN
-        _WIN32
-        __STDC_FORMAT_MACROS=1
-        NOMINMAX
+    target_compile_definitions(
+        webrtc_audio_processing
+        PUBLIC
+            WEBRTC_WIN
+            _WIN32
+            __STDC_FORMAT_MACROS=1
+            NOMINMAX
     )
 endif()
 
 if(ARCH_X86_64)
-    list(APPEND avx2_sources
+    list(
+        APPEND
+        avx2_sources
         "aec3/adaptive_fir_filter_avx2.cc"
         "aec3/adaptive_fir_filter_erl_avx2.cc"
         "aec3/fft_data_avx2.cc"
@@ -359,27 +363,40 @@ if(ARCH_X86_64)
     )
     target_sources(webrtc_audio_processing PRIVATE ${avx2_sources})
     if(MSVC)
-        set_source_files_properties(${avx2_sources} PROPERTIES
-            COMPILE_FLAGS "/arch:AVX2")
+        set_source_files_properties(
+            ${avx2_sources}
+            PROPERTIES
+                COMPILE_FLAGS
+                    "/arch:AVX2"
+        )
     else()
-        set_source_files_properties(${avx2_sources} PROPERTIES
-            COMPILE_FLAGS "-mavx2 -mfma")
+        set_source_files_properties(
+            ${avx2_sources}
+            PROPERTIES
+                COMPILE_FLAGS
+                    "-mavx2 -mfma"
+        )
     endif()
 elseif(ARCH_HAS_NEON)
-    target_sources(webrtc_audio_processing PRIVATE
-        "aecm/aecm_core_neon.cc")
+    target_sources(webrtc_audio_processing PRIVATE "aecm/aecm_core_neon.cc")
 endif()
 
-target_link_libraries(webrtc_audio_processing
+target_link_libraries(
+    webrtc_audio_processing
     PUBLIC
-        absl::optional 
+        absl::optional
         absl::bad_optional_access
 )
 
-install(TARGETS webrtc_audio_processing
+install(
+    TARGETS
+        webrtc_audio_processing
     EXPORT webrtc-audio-processing-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
     INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

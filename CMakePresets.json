@@ -1,21 +1,21 @@
 {
-    "version": 6,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 23,
-        "patch": 0
-    },
-    "include": [
-        "cmake/presets/win64-ninja-static.json",
-        "cmake/presets/macos-arm64-static.json",
-        "cmake/presets/macos-x86_64-static.json",
-        "cmake/presets/ios-arm64-static.json",
-        "cmake/presets/ios-sim64-static.json",
-        "cmake/presets/win64-msvc-static.json",
-        "cmake/presets/android-armeabi-v7a.json",
-        "cmake/presets/android-arm64-v8a.json",
-        "cmake/presets/android-x86_64.json",
-        "cmake/presets/linux-clang64-static.json",
-        "cmake/presets/emscripten.json"
-    ]
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": [
+    "cmake/presets/win64-ninja-static.json",
+    "cmake/presets/macos-arm64-static.json",
+    "cmake/presets/macos-x86_64-static.json",
+    "cmake/presets/ios-arm64-static.json",
+    "cmake/presets/ios-sim64-static.json",
+    "cmake/presets/win64-msvc-static.json",
+    "cmake/presets/android-armeabi-v7a.json",
+    "cmake/presets/android-arm64-v8a.json",
+    "cmake/presets/android-x86_64.json",
+    "cmake/presets/linux-clang64-static.json",
+    "cmake/presets/emscripten.json"
+  ]
 }

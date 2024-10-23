@@ -1,3 +1,1 @@
-add_library(libfft OBJECT
-    fft.c
-)
+add_library(libfft OBJECT fft.c)

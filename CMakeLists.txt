@@ -36,7 +36,10 @@ endif()
 
 # This is here only for testing atm. Shared libraries are not supported yet.
 if(BUILD_SHARED_LIBS)
-    message(WARNING "Dynamic libraries are not supported yet by this build. Ensure you commit the cmake presets with BUILD_SHARED_LIBS=OFF")
+    message(
+        WARNING
+        "Dynamic libraries are not supported yet by this build. Ensure you commit the cmake presets with BUILD_SHARED_LIBS=OFF"
+    )
     add_compile_definitions(WEBRTC_LIBRARY_IMPL)
     add_compile_definitions(WEBRTC_ENABLE_SYMBOL_EXPORT)
 endif()
@@ -79,7 +82,8 @@ endif()
 
 add_subdirectory(webrtc)
 
-install(EXPORT webrtc-audio-processing-targets
+install(
+    EXPORT webrtc-audio-processing-targets
     FILE webrtc-audio-processingConfig.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/webrtc-audio-processing
 )

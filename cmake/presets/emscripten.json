@@ -1,70 +1,65 @@
 {
-    "version": 6,
-    "cmakeMinimumRequired": {
-        "major": 3,
-        "minor": 23,
-        "patch": 0
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "emscripten",
+      "cacheVariables": {
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
+        "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+      },
+      "environment": {}
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "emscripten",
+      "configurePreset": "emscripten",
+      "configuration": "release",
+      "targets": ["install"]
     },
-    "include": [
-        "common.json"
-    ],
-    "configurePresets": [
+    {
+      "name": "emscripten-debug",
+      "inherits": "emscripten",
+      "configuration": "debug"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "emscripten",
+      "steps": [
         {
-            "inherits": "common",
-            "name": "emscripten",
-            "cacheVariables": {
-                "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
-                "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
-            },
-            "environment": {
-            }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "emscripten",
-            "configurePreset": "emscripten",
-            "configuration": "release",
-            "targets": [
-                "install"
-            ]
+          "type": "configure",
+          "name": "emscripten"
         },
         {
-            "name": "emscripten-debug",
-            "inherits": "emscripten",
-            "configuration": "debug"
+          "type": "build",
+          "name": "emscripten"
         }
-    ],
-    "workflowPresets": [
+      ]
+    },
+    {
+      "name": "emscripten-dev",
+      "steps": [
         {
-            "name": "emscripten",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "emscripten"
-                },
-                {
-                    "type": "build",
-                    "name": "emscripten"
-                }
-            ]
+          "type": "configure",
+          "name": "emscripten"
         },
         {
-            "name": "emscripten-dev",
-            "steps": [
-                {
-                    "type": "configure",
-                    "name": "emscripten"
-                },
-                {
-                    "type": "build",
-                    "name": "emscripten"
-                },
-                {
-                    "type": "build",
-                    "name": "emscripten-debug"
-                }
-            ]
+          "type": "build",
+          "name": "emscripten"
+        },
+        {
+          "type": "build",
+          "name": "emscripten-debug"
         }
-    ]
+      ]
+    }
+  ]
 }

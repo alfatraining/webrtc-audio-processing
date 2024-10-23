@@ -1,22 +1,22 @@
-add_library(isac_vad OBJECT
+add_library(
+    isac_vad
+    OBJECT
     "codecs/isac/main/source/filter_functions.c"
     "codecs/isac/main/source/isac_vad.c"
     "codecs/isac/main/source/pitch_estimator.c"
     "codecs/isac/main/source/pitch_filter.c"
 )
 
-install(FILES codecs/isac/bandwidth_info.h
-    DESTINATION include/modules/audio_coding/codecs/isac)
+install(FILES codecs/isac/bandwidth_info.h DESTINATION include/modules/audio_coding/codecs/isac)
 
-install(FILES codecs/isac/main/source/settings.h
-    DESTINATION include/modules/audio_coding/codecs/isac/main/source)
+install(FILES codecs/isac/main/source/settings.h DESTINATION include/modules/audio_coding/codecs/isac/main/source)
 
-install(FILES codecs/isac/main/include/isac.h
-    DESTINATION include/modules/audio_coding/codecs/isac/main/include)
+install(FILES codecs/isac/main/include/isac.h DESTINATION include/modules/audio_coding/codecs/isac/main/include)
 
 # isac_vad_dep = declare_dependency(sources: isac_vad_sources)
 
-add_library(webrtc_audio_coding
+add_library(
+    webrtc_audio_coding
     "codecs/isac/main/source/arith_routines.c"
     "codecs/isac/main/source/arith_routines_hist.c"
     "codecs/isac/main/source/arith_routines_logist.c"
@@ -50,8 +50,11 @@ add_library(webrtc_audio_coding
     $<TARGET_OBJECTS:system_wrappers>
 )
 
-target_link_libraries(webrtc_audio_coding
-    PUBLIC absl::optional absl::bad_optional_access
+target_link_libraries(
+    webrtc_audio_coding
+    PUBLIC
+        absl::optional
+        absl::bad_optional_access
 )
 
 # libwebrtc_audio_coding = library(ac_project_name,
@@ -64,9 +67,15 @@ target_link_libraries(webrtc_audio_coding
 #     install: true
 # )
 
-install(TARGETS webrtc_audio_coding
+install(
+    TARGETS
+        webrtc_audio_coding
     EXPORT webrtc-audio-processing-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    LIBRARY
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
