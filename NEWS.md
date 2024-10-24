@@ -1,3 +1,9 @@
+## 2024-10-24
+
+Package has now a different build system and different focus. It can statically build for a combination of different platforms.
+
+The build system was changed to [CMake]. CMake presets are used heavily to build for the supported platforms.
+
 Release 0.3
 -----------
 
@@ -53,3 +59,5 @@ Release 0.1
 
 Initial release, consisting of the WebRTC AudioProcessing module with a
 distributor-friendly build system.
+
+[CMake]: https://cmake.org
