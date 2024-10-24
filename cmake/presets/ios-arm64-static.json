@@ -1,0 +1,66 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "ios-arm64-static",
+      "cacheVariables": {
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
+        "CMAKE_SYSTEM_NAME": "iOS",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "12.4",
+        "CMAKE_OSX_ARCHITECTURES": "arm64"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "ios-arm64-static",
+      "configurePreset": "ios-arm64-static",
+      "configuration": "release",
+      "targets": ["install"]
+    },
+    {
+      "name": "ios-arm64-static-debug",
+      "inherits": "ios-arm64-static",
+      "configuration": "debug"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "ios-arm64-static",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ios-arm64-static"
+        },
+        {
+          "type": "build",
+          "name": "ios-arm64-static"
+        }
+      ]
+    },
+    {
+      "name": "ios-arm64-static-dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ios-arm64-static"
+        },
+        {
+          "type": "build",
+          "name": "ios-arm64-static"
+        },
+        {
+          "type": "build",
+          "name": "ios-arm64-static-debug"
+        }
+      ]
+    }
+  ]
+}

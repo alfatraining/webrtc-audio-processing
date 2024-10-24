@@ -1,0 +1,22 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "common",
+      "hidden": true,
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/build/${presetName}/install",
+      "cacheVariables": {
+        "CMAKE_DEBUG_POSTFIX": "d",
+        "CMAKE_POSITION_INDEPENDENT_CODE": "ON",
+        "CMAKE_PREFIX_PATH": "${sourceParentDir}/alfadeps/build-${presetName}/install"
+      }
+    }
+  ]
+}

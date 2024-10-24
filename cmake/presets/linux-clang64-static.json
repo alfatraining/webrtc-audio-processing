@@ -1,0 +1,66 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "linux-clang64-static",
+      "cacheVariables": {},
+      "environment": {
+        "CC": "clang",
+        "CXX": "clang",
+        "LANG": "C.UTF-8"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "linux-clang64-static",
+      "configurePreset": "linux-clang64-static",
+      "configuration": "release",
+      "targets": ["install"]
+    },
+    {
+      "name": "linux-clang64-static-debug",
+      "inherits": "linux-clang64-static",
+      "configuration": "debug"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "linux-clang64-static",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "linux-clang64-static"
+        },
+        {
+          "type": "build",
+          "name": "linux-clang64-static"
+        }
+      ]
+    },
+    {
+      "name": "linux-clang64-static-dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "linux-clang64-static"
+        },
+        {
+          "type": "build",
+          "name": "linux-clang64-static"
+        },
+        {
+          "type": "build",
+          "name": "linux-clang64-static-debug"
+        }
+      ]
+    }
+  ]
+}

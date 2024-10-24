@@ -1,0 +1,66 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "macos-arm64-static",
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "arm64"
+      },
+      "environment": {
+        "MACOSX_DEPLOYMENT_TARGET": "10.13"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "macos-arm64-static",
+      "configurePreset": "macos-arm64-static",
+      "configuration": "release",
+      "targets": ["install"]
+    },
+    {
+      "name": "macos-arm64-static-debug",
+      "inherits": "macos-arm64-static",
+      "configuration": "debug"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "macos-arm64-static",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "macos-arm64-static"
+        },
+        {
+          "type": "build",
+          "name": "macos-arm64-static"
+        }
+      ]
+    },
+    {
+      "name": "macos-arm64-static-dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "macos-arm64-static"
+        },
+        {
+          "type": "build",
+          "name": "macos-arm64-static"
+        },
+        {
+          "type": "build",
+          "name": "macos-arm64-static-debug"
+        }
+      ]
+    }
+  ]
+}

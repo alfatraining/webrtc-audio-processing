@@ -11,6 +11,7 @@
 #include "modules/audio_processing/aec3/transparent_mode.h"
 
 #include "rtc_base/checks.h"
+#include "rtc_base/logging.h"
 #include "system_wrappers/include/field_trial.h"
 
 namespace webrtc {
@@ -18,13 +19,14 @@ namespace {
 
 constexpr size_t kBlocksSinceConvergencedFilterInit = 10000;
 constexpr size_t kBlocksSinceConsistentEstimateInit = 10000;
+constexpr float kInitialTransparentStateProbability = 0.2f;
 
 bool DeactivateTransparentMode() {
   return field_trial::IsEnabled("WebRTC-Aec3TransparentModeKillSwitch");
 }
 
-bool DeactivateTransparentModeHmm() {
-  return field_trial::IsEnabled("WebRTC-Aec3TransparentModeHmmKillSwitch");
+bool ActivateTransparentModeHmm() {
+  return field_trial::IsEnabled("WebRTC-Aec3TransparentModeHmm");
 }
 
 }  // namespace
@@ -40,12 +42,13 @@ class TransparentModeImpl : public TransparentMode {
     transparency_activated_ = false;
 
     // The estimated probability of being transparent mode.
-    prob_transparent_state_ = 0.f;
+    prob_transparent_state_ = kInitialTransparentStateProbability;
   }
 
   void Update(int filter_delay_blocks,
               bool any_filter_consistent,
               bool any_filter_converged,
+              bool any_coarse_filter_converged,
               bool all_filters_diverged,
               bool active_render,
               bool saturated_capture) override {
@@ -56,9 +59,9 @@ class TransparentModeImpl : public TransparentMode {
     // there is no echo present in the microphone signal.
 
     // The constants have been obtained by observing active_render and
-    // any_filter_converged under varying call scenarios. They have further been
-    // hand tuned to prefer normal state during uncertain regions (to avoid echo
-    // leaks).
+    // any_coarse_filter_converged under varying call scenarios. They
+    // have further been hand tuned to prefer normal state during uncertain
+    // regions (to avoid echo leaks).
 
     // The model is only updated during active render.
     if (!active_render)
@@ -69,8 +72,8 @@ class TransparentModeImpl : public TransparentMode {
 
     // Probability of observing converged filters in states "normal" and
     // "transparent" during active render.
-    constexpr float kConvergedNormal = 0.03f;
-    constexpr float kConvergedTransparent = 0.005f;
+    constexpr float kConvergedNormal = 0.01f;
+    constexpr float kConvergedTransparent = 0.001f;
 
     // Probability of transitioning to transparent state from normal state and
     // transparent state respectively.
@@ -92,7 +95,7 @@ class TransparentModeImpl : public TransparentMode {
     const float prob_transition_normal = 1.f - prob_transition_transparent;
 
     // Observed output.
-    const int out = any_filter_converged;
+    const int out = static_cast<int>(any_coarse_filter_converged);
 
     // Joint probabilites of the observed output and respective states.
     const float prob_joint_normal = prob_transition_normal * kB[0][out];
@@ -116,7 +119,7 @@ class TransparentModeImpl : public TransparentMode {
 
  private:
   bool transparency_activated_ = false;
-  float prob_transparent_state_ = 0.f;
+  float prob_transparent_state_ = kInitialTransparentStateProbability;
 };
 
 // Legacy classifier for toggling transparent mode.
@@ -142,6 +145,7 @@ class LegacyTransparentModeImpl : public TransparentMode {
   void Update(int filter_delay_blocks,
               bool any_filter_consistent,
               bool any_filter_converged,
+              bool any_coarse_filter_converged,
               bool all_filters_diverged,
               bool active_render,
               bool saturated_capture) override {
@@ -226,12 +230,15 @@ class LegacyTransparentModeImpl : public TransparentMode {
 std::unique_ptr<TransparentMode> TransparentMode::Create(
     const EchoCanceller3Config& config) {
   if (config.ep_strength.bounded_erl || DeactivateTransparentMode()) {
+    RTC_LOG(LS_INFO) << "AEC3 Transparent Mode: Disabled";
     return nullptr;
   }
-  if (DeactivateTransparentModeHmm()) {
-    return std::make_unique<LegacyTransparentModeImpl>(config);
+  if (ActivateTransparentModeHmm()) {
+    RTC_LOG(LS_INFO) << "AEC3 Transparent Mode: HMM";
+    return std::make_unique<TransparentModeImpl>();
   }
-  return std::make_unique<TransparentModeImpl>();
+  RTC_LOG(LS_INFO) << "AEC3 Transparent Mode: Legacy";
+  return std::make_unique<LegacyTransparentModeImpl>(config);
 }
 
 }  // namespace webrtc

@@ -14,10 +14,11 @@
 #include <stddef.h>
 
 #include <array>
+#include <atomic>
 #include <memory>
+#include <optional>
 #include <vector>
 
-#include "absl/types/optional.h"
 #include "api/array_view.h"
 #include "api/audio/echo_canceller3_config.h"
 #include "modules/audio_processing/aec3/aec3_common.h"
@@ -70,15 +71,16 @@ class AecState {
   }
 
   // Returns the ERLE.
-  rtc::ArrayView<const std::array<float, kFftLengthBy2Plus1>> Erle() const {
-    return erle_estimator_.Erle();
+  rtc::ArrayView<const std::array<float, kFftLengthBy2Plus1>> Erle(
+      bool onset_compensated) const {
+    return erle_estimator_.Erle(onset_compensated);
   }
 
-  // Returns an offset to apply to the estimation of the residual echo
-  // computation. Returning nullopt means that no offset should be used, while
-  // any other value will be applied as a multiplier to the estimated residual
-  // echo.
-  absl::optional<float> ErleUncertainty() const;
+  // Returns the non-capped ERLE.
+  rtc::ArrayView<const std::array<float, kFftLengthBy2Plus1>> ErleUnbounded()
+      const {
+    return erle_estimator_.ErleUnbounded();
+  }
 
   // Returns the fullband ERLE estimate in log2 units.
   float FullBandErleLog2() const { return erle_estimator_.FullbandErleLog2(); }
@@ -115,8 +117,12 @@ class AecState {
   // Takes appropriate action at an echo path change.
   void HandleEchoPathChange(const EchoPathVariability& echo_path_variability);
 
-  // Returns the decay factor for the echo reverberation.
-  float ReverbDecay() const { return reverb_model_estimator_.ReverbDecay(); }
+  // Returns the decay factor for the echo reverberation. The parameter `mild`
+  // indicates which exponential decay to return. The default one or a milder
+  // one that can be used during nearend regions.
+  float ReverbDecay(bool mild) const {
+    return reverb_model_estimator_.ReverbDecay(mild);
+  }
 
   // Return the frequency response of the reverberant echo.
   rtc::ArrayView<const float> GetReverbFrequencyResponse() const {
@@ -132,7 +138,7 @@ class AecState {
   // Updates the aec state.
   // TODO(bugs.webrtc.org/10913): Compute multi-channel ERL.
   void Update(
-      const absl::optional<DelayEstimate>& external_delay,
+      const std::optional<DelayEstimate>& external_delay,
       rtc::ArrayView<const std::vector<std::array<float, kFftLengthBy2Plus1>>>
           adaptive_filter_frequency_responses,
       rtc::ArrayView<const std::vector<float>>
@@ -149,7 +155,7 @@ class AecState {
   }
 
  private:
-  static int instance_count_;
+  static std::atomic<int> instance_count_;
   std::unique_ptr<ApmDataDumper> data_dumper_;
   const EchoCanceller3Config config_;
   const size_t num_capture_channels_;
@@ -207,7 +213,7 @@ class AecState {
     // Updates the delay estimates based on new data.
     void Update(
         rtc::ArrayView<const int> analyzer_filter_delay_estimates_blocks,
-        const absl::optional<DelayEstimate>& external_delay,
+        const std::optional<DelayEstimate>& external_delay,
         size_t blocks_with_proper_filter_adaptation);
 
    private:
@@ -215,7 +221,7 @@ class AecState {
     bool external_delay_reported_ = false;
     std::vector<int> filter_delays_blocks_;
     int min_filter_delay_;
-    absl::optional<DelayEstimate> external_delay_;
+    std::optional<DelayEstimate> external_delay_;
   } delay_state_;
 
   // Classifier for toggling transparent mode when there is no echo.
@@ -247,7 +253,7 @@ class AecState {
     void Update(bool active_render,
                 bool transparent_mode,
                 bool saturated_capture,
-                const absl::optional<DelayEstimate>& external_delay,
+                const std::optional<DelayEstimate>& external_delay,
                 bool any_filter_converged);
 
    private:
@@ -267,7 +273,7 @@ class AecState {
     bool SaturatedEcho() const { return saturated_echo_; }
 
     // Updates the detection decision based on new data.
-    void Update(rtc::ArrayView<const std::vector<float>> x,
+    void Update(const Block& x,
                 bool saturated_capture,
                 bool usable_linear_estimate,
                 rtc::ArrayView<const SubtractorOutput> subtractor_output,
