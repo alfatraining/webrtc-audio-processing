@@ -16,6 +16,11 @@
           "type": "STRING",
           "value": "MultiThreaded$<$<CONFIG:Debug>:Debug>"
         }
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
       }
     }
   ],
@@ -24,12 +29,22 @@
       "name": "win64-ninja-static",
       "configurePreset": "win64-ninja-static",
       "configuration": "release",
-      "targets": ["install"]
+      "targets": ["install"],
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     },
     {
       "name": "win64-ninja-static-debug",
       "inherits": "win64-ninja-static",
-      "configuration": "debug"
+      "configuration": "debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     }
   ],
   "workflowPresets": [

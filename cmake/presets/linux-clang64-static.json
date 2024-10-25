@@ -15,6 +15,11 @@
         "CC": "clang",
         "CXX": "clang",
         "LANG": "C.UTF-8"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
       }
     }
   ],
@@ -23,12 +28,22 @@
       "name": "linux-clang64-static",
       "configurePreset": "linux-clang64-static",
       "configuration": "release",
-      "targets": ["install"]
+      "targets": ["install"],
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
     },
     {
       "name": "linux-clang64-static-debug",
       "inherits": "linux-clang64-static",
-      "configuration": "debug"
+      "configuration": "debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
     }
   ],
   "workflowPresets": [

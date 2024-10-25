@@ -13,8 +13,7 @@
       "cacheVariables": {
         "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
         "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
-      },
-      "environment": {}
+      }
     }
   ],
   "buildPresets": [

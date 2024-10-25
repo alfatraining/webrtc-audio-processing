@@ -18,8 +18,7 @@
         "CMAKE_ANDROID_STL_TYPE": "c++_static",
         "CMAKE_ANDROID_ARM_MODE": "ON",
         "CMAKE_ANDROID_ARM_NEON": "ON"
-      },
-      "environment": {}
+      }
     }
   ],
   "buildPresets": [

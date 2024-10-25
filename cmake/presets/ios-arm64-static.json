@@ -15,6 +15,11 @@
         "CMAKE_SYSTEM_NAME": "iOS",
         "CMAKE_OSX_DEPLOYMENT_TARGET": "12.4",
         "CMAKE_OSX_ARCHITECTURES": "arm64"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
       }
     }
   ],
@@ -23,12 +28,22 @@
       "name": "ios-arm64-static",
       "configurePreset": "ios-arm64-static",
       "configuration": "release",
-      "targets": ["install"]
+      "targets": ["install"],
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
     },
     {
       "name": "ios-arm64-static-debug",
       "inherits": "ios-arm64-static",
-      "configuration": "debug"
+      "configuration": "debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
     }
   ],
   "workflowPresets": [

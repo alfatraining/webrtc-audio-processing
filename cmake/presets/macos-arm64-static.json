@@ -15,6 +15,11 @@
       },
       "environment": {
         "MACOSX_DEPLOYMENT_TARGET": "10.13"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
       }
     }
   ],
@@ -23,12 +28,22 @@
       "name": "macos-arm64-static",
       "configurePreset": "macos-arm64-static",
       "configuration": "release",
-      "targets": ["install"]
+      "targets": ["install"],
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
     },
     {
       "name": "macos-arm64-static-debug",
       "inherits": "macos-arm64-static",
-      "configuration": "debug"
+      "configuration": "debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
     }
   ],
   "workflowPresets": [

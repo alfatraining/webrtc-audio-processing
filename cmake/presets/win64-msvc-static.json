@@ -25,6 +25,11 @@
           "type": "STRING",
           "value": "x64"
         }
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
       }
     }
   ],
@@ -32,13 +37,23 @@
     {
       "name": "win64-msvc-static",
       "configurePreset": "win64-msvc-static",
-      "configuration": "release",
-      "targets": ["install"]
+      "configuration": "Release",
+      "targets": ["install"],
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     },
     {
       "name": "win64-msvc-static-debug",
       "inherits": "win64-msvc-static",
-      "configuration": "debug"
+      "configuration": "Debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
     }
   ],
   "workflowPresets": [
