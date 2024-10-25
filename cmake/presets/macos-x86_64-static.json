@@ -1,0 +1,81 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "macos-x86_64-static",
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "arm64"
+      },
+      "environment": {
+        "MACOSX_DEPLOYMENT_TARGET": "10.13"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "macos-x86_64-static",
+      "configurePreset": "macos-x86_64-static",
+      "configuration": "release",
+      "targets": ["install"],
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "macos-x86_64-static-debug",
+      "inherits": "macos-x86_64-static",
+      "configuration": "debug",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "macos-x86_64-static",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "macos-x86_64-static"
+        },
+        {
+          "type": "build",
+          "name": "macos-x86_64-static"
+        }
+      ]
+    },
+    {
+      "name": "macos-x86_64-static-dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "macos-x86_64-static"
+        },
+        {
+          "type": "build",
+          "name": "macos-x86_64-static"
+        },
+        {
+          "type": "build",
+          "name": "macos-x86_64-static-debug"
+        }
+      ]
+    }
+  ]
+}

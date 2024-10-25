@@ -1,0 +1,64 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "emscripten",
+      "cacheVariables": {
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
+        "CMAKE_TOOLCHAIN_FILE": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "emscripten",
+      "configurePreset": "emscripten",
+      "configuration": "release",
+      "targets": ["install"]
+    },
+    {
+      "name": "emscripten-debug",
+      "inherits": "emscripten",
+      "configuration": "debug"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "emscripten",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "emscripten"
+        },
+        {
+          "type": "build",
+          "name": "emscripten"
+        }
+      ]
+    },
+    {
+      "name": "emscripten-dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "emscripten"
+        },
+        {
+          "type": "build",
+          "name": "emscripten"
+        },
+        {
+          "type": "build",
+          "name": "emscripten-debug"
+        }
+      ]
+    }
+  ]
+}

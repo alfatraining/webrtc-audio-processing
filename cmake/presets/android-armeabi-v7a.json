@@ -1,0 +1,69 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "android-armeabi-v7a",
+      "cacheVariables": {
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
+        "CMAKE_SYSTEM_NAME": "Android",
+        "CMAKE_SYSTEM_VERSION": "23",
+        "CMAKE_ANDROID_ARCH_ABI": "armeabi-v7a",
+        "CMAKE_ANDROID_STL_TYPE": "c++_static",
+        "CMAKE_ANDROID_ARM_MODE": "ON",
+        "CMAKE_ANDROID_ARM_NEON": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "android-armeabi-v7a",
+      "configurePreset": "android-armeabi-v7a",
+      "configuration": "release",
+      "targets": ["install"]
+    },
+    {
+      "name": "android-armeabi-v7a-debug",
+      "inherits": "android-armeabi-v7a",
+      "configuration": "debug"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "android-armeabi-v7a",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "android-armeabi-v7a"
+        },
+        {
+          "type": "build",
+          "name": "android-armeabi-v7a"
+        }
+      ]
+    },
+    {
+      "name": "android-armeabi-v7a-dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "android-armeabi-v7a"
+        },
+        {
+          "type": "build",
+          "name": "android-armeabi-v7a"
+        },
+        {
+          "type": "build",
+          "name": "android-armeabi-v7a-debug"
+        }
+      ]
+    }
+  ]
+}

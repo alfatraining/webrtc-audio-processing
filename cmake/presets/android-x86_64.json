@@ -1,0 +1,67 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "android-x86_64",
+      "cacheVariables": {
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
+        "CMAKE_SYSTEM_NAME": "Android",
+        "CMAKE_SYSTEM_VERSION": "23",
+        "CMAKE_ANDROID_ARCH_ABI": "x86_64",
+        "CMAKE_ANDROID_STL_TYPE": "c++_static"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "android-x86_64",
+      "configurePreset": "android-x86_64",
+      "configuration": "release",
+      "targets": ["install"]
+    },
+    {
+      "name": "android-x86_64-debug",
+      "inherits": "android-x86_64",
+      "configuration": "debug"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "android-x86_64",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "android-x86_64"
+        },
+        {
+          "type": "build",
+          "name": "android-x86_64"
+        }
+      ]
+    },
+    {
+      "name": "android-x86_64-dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "android-x86_64"
+        },
+        {
+          "type": "build",
+          "name": "android-x86_64"
+        },
+        {
+          "type": "build",
+          "name": "android-x86_64-debug"
+        }
+      ]
+    }
+  ]
+}

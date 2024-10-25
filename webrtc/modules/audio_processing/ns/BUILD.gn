@@ -57,7 +57,6 @@ rtc_static_library("ns") {
     "../../../common_audio/third_party/ooura:fft_size_128",
     "../../../common_audio/third_party/ooura:fft_size_256",
     "../../../rtc_base:checks",
-    "../../../rtc_base:rtc_base_approved",
     "../../../rtc_base:safe_minmax",
     "../../../rtc_base/system:arch",
     "../../../system_wrappers",
@@ -65,7 +64,6 @@ rtc_static_library("ns") {
     "../../../system_wrappers:metrics",
     "../utility:cascaded_biquad_filter",
   ]
-  absl_deps = [ "//third_party/abseil-cpp/absl/types:optional" ]
 }
 
 if (rtc_include_tests) {
@@ -80,23 +78,25 @@ if (rtc_include_tests) {
       "..:apm_logging",
       "..:audio_buffer",
       "..:audio_processing",
-      "..:audio_processing_unittests",
       "..:high_pass_filter",
       "../../../api:array_view",
       "../../../rtc_base:checks",
-      "../../../rtc_base:rtc_base_approved",
       "../../../rtc_base:safe_minmax",
+      "../../../rtc_base:stringutils",
       "../../../rtc_base/system:arch",
       "../../../system_wrappers",
       "../../../test:test_support",
       "../utility:cascaded_biquad_filter",
     ]
-    absl_deps = [ "//third_party/abseil-cpp/absl/types:optional" ]
 
     defines = []
 
     if (rtc_enable_protobuf) {
       sources += []
+    }
+
+    if (!build_with_chromium) {
+      deps += [ "..:audio_processing_unittests" ]
     }
   }
 }

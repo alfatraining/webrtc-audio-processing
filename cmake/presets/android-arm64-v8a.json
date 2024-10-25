@@ -1,0 +1,67 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "include": ["common.json"],
+  "configurePresets": [
+    {
+      "inherits": "common",
+      "name": "android-arm64-v8a",
+      "cacheVariables": {
+        "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "BOTH",
+        "CMAKE_SYSTEM_NAME": "Android",
+        "CMAKE_SYSTEM_VERSION": "23",
+        "CMAKE_ANDROID_ARCH_ABI": "arm64-v8a",
+        "CMAKE_ANDROID_STL_TYPE": "c++_static"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "android-arm64-v8a",
+      "configurePreset": "android-arm64-v8a",
+      "configuration": "release",
+      "targets": ["install"]
+    },
+    {
+      "name": "android-arm64-v8a-debug",
+      "inherits": "android-arm64-v8a",
+      "configuration": "debug"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "android-arm64-v8a",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "android-arm64-v8a"
+        },
+        {
+          "type": "build",
+          "name": "android-arm64-v8a"
+        }
+      ]
+    },
+    {
+      "name": "android-arm64-v8a-dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "android-arm64-v8a"
+        },
+        {
+          "type": "build",
+          "name": "android-arm64-v8a"
+        },
+        {
+          "type": "build",
+          "name": "android-arm64-v8a-debug"
+        }
+      ]
+    }
+  ]
+}

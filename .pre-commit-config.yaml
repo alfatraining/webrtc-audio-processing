@@ -1,0 +1,29 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+        exclude: 'webrtc/.*'
+      - id: trailing-whitespace
+        args: ["--markdown-linebreak-ext=md,markdown"]
+        exclude: 'webrtc/.*'
+
+  - repo: local
+    hooks:
+      - id: gersemi
+        name: cmake fmt
+        description: "cmake formatter (github.com/BlankSpruce/gersemi)"
+        entry: gersemi
+        args: [--in-place]
+        language: system
+        types: [cmake]
+
+      - id: lint-prettier
+        name: json fmt
+        description: "format JSON with prettier"
+        entry: prettier
+        args: [--write]
+        language: system
+        types: [json]
+        exclude: 'webrtc/.*'
